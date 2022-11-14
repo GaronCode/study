@@ -6,7 +6,7 @@ def random_list():
 # Последовательности, начиная с первого элемента
 def first_sequence(list, filter):
     prew_value = 0
-    return [x:=i for index,i in enumerate(list) if filter(i,prew_value) or index==0]
+    return [prew_value:=i for index,i in enumerate(list) if filter(i,prew_value) or index==0]
 
 # Перебор всех последовательностей
 def all_sequences(list, filter):
