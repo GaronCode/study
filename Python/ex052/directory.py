@@ -1,5 +1,5 @@
 class G_directory():
-    list = []
+    list
     record_keys = [
         {
             'main':'name',
@@ -17,7 +17,10 @@ class G_directory():
     texts = {
         'null': 'отсутствует',
         'empty': 'пусто',
-        'std_name': 'Справочник'
+        'std_name': 'Справочник',
+        'done': 'Готово!',
+        'dict_name': 'Название справочника',
+        'empty_file_name': 'Имя файла не задано',
     }
     name = ''
 # запись
@@ -28,6 +31,9 @@ class G_directory():
 # }
     def __init__(self, string = ''):
         self.name = string if string else self.texts['std_name']
+        self.list = []
+
+    # добавляет запись и возвращает её
     def add_record(self, name = '', tel = '', adress = ''):
         self.list.append({
             "name": name,
@@ -38,35 +44,46 @@ class G_directory():
 
     def delete_record(self, record):
         self.list.remove(record)
+        return self
     # где key - по чему искать (name, tel, adress)
     # возвращает запись
     def find_record_by(self, key, val):
+        a = False
         for record in self.list:
             if record[key] == val:
                 return record
+        return a
 
     def record_to_str(self,record):
         str = ''
         for k in self.record_keys:
-            str += '{}: {}  '.format(k['text'], record[k['main']] if record[k['main']] else self.texts['null']) 
-        return str
+            str += '   {}: {},'.format(k['text'], record[k['main']])  if record[k['main']] else '' 
+        return str[:-1]
 
-    def records_to_str(self, sep = '\n'):
+    def records_to_str(self):
         str = ''
         i = 1
         for record in self.list:
-            str += '{}: {} {}'.format(i, self.record_to_str(record), sep)
+            str += '\n{}) {} '.format(i, self.record_to_str(record))
             i+=1
         return str
+
+    def see(self):
+        print('___________________________________________________')
+        print('{}: {}'.format(self.texts['dict_name'], self.name))
+        s = self.records_to_str()
+        s = self.texts['empty'] if s == '' else s
+        print(s)
+        return self
 
     def export_xml_str(self):
         import re
         str = '<?xml version="1.0" encoding="UTF-8"?>\n<phoneBook name="{}">\n'.format(re.sub('[^A-Za-z0-9]+', '', self.name))
         for record in self.list:
-            str += '\t<contact>\n'
+            str += '\t<contact'
             for k in self.record_keys:
-                str += '\t\t<{}>{}</{}>\n'.format(k['main'],record[k['main']],k['main']) if record[k['main']] else ''
-            str += '\t</contact>\n'
+                str += ' {}="{}"'.format(k['main'],record[k['main']]) if record[k['main']] else ''
+            str += '></contact>\n'
         str +='</phoneBook>'
         return str
 
@@ -82,16 +99,18 @@ class G_directory():
                 return str_for_find[:endIndex]
             else:
                 return ''
-
         str_list = str.split('\n')
         for i in str_list:
             if '<phoneBook' in i:
                 self.name = get_params('name', i)
                 continue
-            
+            if '<contact' in i:
+                record = self.add_record()
+                for k in self.record_keys:
+                    record[k['main']] = get_params(k['main'], i)
 
-
-        print(str_list)
+        print(self.texts['done'])
+        return self
 
     def export_xml_file(self, file_name = ''):
         import re
@@ -100,6 +119,68 @@ class G_directory():
         file_name = re.sub('[^A-Za-z0-9]+', '', file_name) + '.xml'
         self.write_to_file(self.export_xml_str(), file_name)
         return self
+
+    def import_xml_file(self, file_name = ''):
+        if file_name == '':
+            print(self.texts['empty_file_name'])
+            return False
+
+        if not(f := self.read_file(file_name)): 
+            return False
+        
+        return self.import_xml_str(f)
+
+
+
+
+
+    def export_html_str(self):
+        import re
+        str = """
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+        <h1>{}</h1>
+        <ol>""".format(re.sub('[^A-Za-z0-9]+', '', self.name))
+
+
+        for record in self.list:
+            str += '\n            <li>'
+            str += self.record_to_str(record)
+            str += '></li>'
+        str += """
+        </ol>
+    </body>
+</html>
+        """
+        return str
+
+    def export_html_file(self, file_name = ''):
+        import re
+        if file_name == '':
+            file_name = self.name
+        file_name = re.sub('[^A-Za-z0-9]+', '', file_name) + '.html'
+        self.write_to_file(self.export_html_str(), file_name)
+        return self
+
+    def import_xml_file(self, file_name = ''):
+        if file_name == '':
+            print(self.texts['empty_file_name'])
+            return False
+
+        if not(f := self.read_file(file_name)): 
+            return False
+        
+        return self.import_xml_str(f)
+
+
+
+
+
+
+
 
 
     @staticmethod
@@ -118,4 +199,4 @@ class G_directory():
         else:
             s = f.read()
             f.close()
-            return f
+            return s
