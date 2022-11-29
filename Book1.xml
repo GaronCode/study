@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<phoneBook name="Book1">
-	<contact name="Андрей Евгеньевич" tel="+7 599 999 99 99" adress="Горьковская д.1"></contact>
-	<contact name="Иван"></contact>
-</phoneBook>
