@@ -1,5 +1,4 @@
 class G_directory():
-    list
     record_keys = [
         {
             'main':'name',
@@ -22,7 +21,6 @@ class G_directory():
         'dict_name': 'Название справочника',
         'empty_file_name': 'Имя файла не задано',
     }
-    name = ''
 # запись
 # {
 #     name: 'ivan'
