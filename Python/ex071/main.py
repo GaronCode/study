@@ -4,9 +4,9 @@ from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 from commands import com
 
 
+API_KEY = "9999999999:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 
-
-app = ApplicationBuilder().token("5786494992:AAEGcPJ2USficrtLKMsRP179Hhk7nkGOEBQ").build()
+app = ApplicationBuilder().token().build()
 
 
 
