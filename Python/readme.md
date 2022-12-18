@@ -1,5 +1,9 @@
 # Обучение/Тренировка языку Python
 
+## Используемые пакеты программ:
+- Python 3.11 [a link](https://www.python.org/downloads/)
+- Python (VS Extention) [a link](https://marketplace.visualstudio.com/items?itemName=ms-python.python)
+
 ## EX0
 001. Программа для вывода списка факториалов от 1 до N
 002. Программа для вывода результата значения вырожения при разных вводных
